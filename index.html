@@ -339,17 +339,18 @@ function exportCSV() {
     })
     .join("\n");
 
-  const blob = new Blob([csv], { type: "text/csv" });
-  const url = URL.createObjectURL(blob);
+  // Buat data URL sederhana
+  const encoded = encodeURIComponent(csv);
+  const url = "data:text/csv;charset=utf-8," + encoded;
 
   const a = document.createElement("a");
   a.href = url;
   a.download = "family_finance.csv";
+  document.body.appendChild(a);
   a.click();
-
-  URL.revokeObjectURL(url);
+  document.body.removeChild(a);
 }
-
+  
 // ====== Init ======
 window.onload = () => {
   const today = new Date().toISOString().slice(0,10);
