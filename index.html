@@ -251,11 +251,8 @@ function getMonthKey(dateStr) {
 }
 
 function getFilteredData() {
-  const data = getData();
-  const month = document.getElementById("monthFilter").value; // "2025-11"
-  if (!month) return data;
-
-  return data.filter(x => getMonthKey(x.date) === month);
+  // HOTFIX: jangan filter dulu, tampilkan semua data apa pun bulannya
+  return getData();
 }
 
 
