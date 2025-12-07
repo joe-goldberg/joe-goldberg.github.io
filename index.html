@@ -258,7 +258,7 @@ function updateTable() {
   if (data.length === 0) {
     const tr = document.createElement("tr");
     const td = document.createElement("td");
-    td.colSpan = 4;
+    td.colSpan = 5;
     td.textContent = "No data for this period.";
     tr.appendChild(td);
     tbody.appendChild(tr);
@@ -321,6 +321,33 @@ function updateDashboard() {
   updateSummary();
   updateTable();
   updateChart();
+}
+
+// ====== Export CSV ======
+function exportCSV() {
+  const data = getData();
+  if (!data.length) {
+    alert("No data to export");
+    return;
+  }
+
+  let csv = "date,type,category,amount,notes\n";
+  csv += data
+    .map(d => {
+      const safeNotes = (d.notes || "").replace(/"/g, '""'); // escape tanda kutip
+      return `${d.date},${d.type},${d.category},${d.amount},"${safeNotes}"`;
+    })
+    .join("\n");
+
+  const blob = new Blob([csv], { type: "text/csv" });
+  const url = URL.createObjectURL(blob);
+
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "family_finance.csv";
+  a.click();
+
+  URL.revokeObjectURL(url);
 }
 
 // ====== Init ======
