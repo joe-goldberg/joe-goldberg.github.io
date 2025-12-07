@@ -325,6 +325,8 @@ function updateDashboard() {
 
 // ====== Export CSV ======
 function exportCSV() {
+  console.log("exportCSV() called"); // debugging line
+
   const data = getData();
   if (!data.length) {
     alert("No data to export");
@@ -334,12 +336,11 @@ function exportCSV() {
   let csv = "date,type,category,amount,notes\n";
   csv += data
     .map(d => {
-      const safeNotes = (d.notes || "").replace(/"/g, '""'); // escape tanda kutip
+      const safeNotes = (d.notes || "").replace(/"/g, '""');
       return `${d.date},${d.type},${d.category},${d.amount},"${safeNotes}"`;
     })
     .join("\n");
 
-  // Buat data URL sederhana
   const encoded = encodeURIComponent(csv);
   const url = "data:text/csv;charset=utf-8," + encoded;
 
@@ -348,8 +349,9 @@ function exportCSV() {
   a.download = "family_finance.csv";
   document.body.appendChild(a);
   a.click();
-  document.body.removeChild(a);
+  a.remove();
 }
+
   
 // ====== Init ======
 window.onload = () => {
