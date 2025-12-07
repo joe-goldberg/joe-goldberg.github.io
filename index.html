@@ -51,7 +51,7 @@
   <select id="categoryInput"></select>
 
   <label for="amountInput">Amount</label>
-  <input type="number" id="amountInput" placeholder="Enter amount">
+  <input type="number" id="amountInput" step="0.01" placeholder="Enter amount">
 
   <label for="NotesInput">Notes</label>
   <input type="text" id="notesInput" placeholder="Optional notes (e.g. bought soap)">
@@ -138,9 +138,14 @@ function updateCategories() {
 }
 
 function formatMoney(num) {
-  if (!num) return "0";
-  return new Intl.NumberFormat("id-ID", { maximumFractionDigits: 0 }).format(num);
+  if (!num) return "0.00";
+
+  return new Intl.NumberFormat("id-ID", { 
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2 
+  }).format(Number(num));
 }
+
 
 // ====== Sync to Google Sheets (Write) ======
 async function syncToGoogleSheets(entry) {
@@ -188,7 +193,7 @@ function saveData() {
   const date = document.getElementById("dateInput").value;
   const type = document.getElementById("typeInput").value;
   const category = document.getElementById("categoryInput").value;
-  const amount = Number(document.getElementById("amountInput").value);
+  const amount = parseFloat(document.getElementById("amountInput").value).toFixed(2);
   const notes = document.getElementById("notesInput").value || "";
 
   if (!date || !type || !category || !amount || !notes) {
@@ -337,7 +342,7 @@ function exportCSV() {
   csv += data
     .map(d => {
       const safeNotes = (d.notes || "").replace(/"/g, '""');
-      return `${d.date},${d.type},${d.category},${d.amount},"${safeNotes}"`;
+      return `${d.date},${d.type},${d.category},${Number(d.amount).toFixed(2)},"${safeNotes}"`;
     })
     .join("\n");
 
